@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+        }
+        
+        .container {
+            padding-top: 20px;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .convertBtn {
+            background: #ff6f61;
+            font-weight: bold;
+            border: none;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .convertBtn:hover {
+            background: #e63946;
+        }
+
+        .resultSection {
+            background: #ffebee;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+
+        .show-result {
+            opacity: 1;
+        }
+
+        .history-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: #222;
+            color: #fff;
+        }
+
+        .dark-mode .card {
+            background: #333;
+            color: #fff;
+            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-mode .resultSection {
+            background: #444;
+        }
+
+        .dark-mode .history-card {
+            background: #555;
+        }
+
+        /* Dark Mode Toggle Button */
+        .dark-mode-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .dark-mode-btn:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Dark Mode Toggle Button -->
+<button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+<div class="container">
+    <div class="row justify-content-center">
+        
+        <!-- Input Section -->
+        <div class="card inputSection col-12 col-md-6 p-4">
+            <div class="card-body">
+                <form id="converterForm">
+                    <div class="mb-3">
+                        <h5 class="text-center">Enter Temperature</h5>
+                        <label for="inputDegree" class="form-label">Degree</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="inputDegree" placeholder="Enter Degree" value="0">
+                            <select class="form-control" id="selectInputDegreeType">
+                                <option value="C" selected>&deg;C</option>
+                                <option value="F">&deg;F</option>
+                                <option value="K">K</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="selectConversionType" class="form-label">Convert To</label>
+                        <select class="form-control" id="selectConversionType">
+                            <option value="F" selected>Fahrenheit (&deg;F)</option>
+                            <option value="C">Celsius (&deg;C)</option>
+                            <option value="K">Kelvin (K)</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="convertBtn btn btn-lg w-100 text-white" onclick="convertTemperature()">
+                        Convert &emsp; ➜
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="card resultSection col-12 col-md-6 p-4 mt-3">
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <div id="resultValueSection">
+                    <div id="convertedDegree">--</div>
+                    <h3 id="degree">&deg;</h3>
+                    <h3 id="convertedUnit">?</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion History -->
+        <div class="col-12 mt-3">
+            <h5>Conversion History</h5>
+            <div id="historySection"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript for API Call, Animations & Dark Mode -->
+<script>
+    function convertTemperature() {
+        let value = document.getElementById("inputDegree").value;
+        let from = document.getElementById("selectInputDegreeType").value;
+        let to = document.getElementById("selectConversionType").value;
+
+        fetch(`http://localhost:8080/api/temperature/convert?value=${value}&from=${from}&to=${to}`)
+            .then(response => response.json())
+            .then(data => {
+                let resultValue = data.output.match(/\d+(\.\d+)?/)[0];
+                
+                // Update Result Section
+                document.getElementById("convertedDegree").innerText = resultValue;
+                document.getElementById("convertedUnit").innerText = to;
+                
+                // Show Result Animation
+                document.querySelector(".resultSection").classList.add("show-result");
+
+                // Update History
+                addToHistory(`${value}°${from} ➝ ${resultValue}°${to}`);
+            })
+            .catch(error => {
+                document.getElementById("convertedDegree").innerText = "Error!";
+                document.getElementById("convertedUnit").innerText = "";
+            });
+    }
+
+    function addToHistory(conversion) {
+        let historySection = document.getElementById("historySection");
+        let historyItem = document.createElement("div");
+        historyItem.classList.add("history-card");
+        historyItem.innerText = conversion;
+
+        // Add to history
+        historySection.prepend(historyItem);
+
+        // Limit history to 5 items
+        if (historySection.children.length > 5) {
+            historySection.removeChild(historySection.lastChild);
+        }
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        let btn = document.querySelector(".dark-mode-btn");
+        if (document.body.classList.contains("dark-mode")) {
+            btn.innerText = "☀️ Light Mode";
+        } else {
+            btn.innerText = "🌙 Dark Mode";
+        }
+    }
+</script>
+
+</body>
+</html>

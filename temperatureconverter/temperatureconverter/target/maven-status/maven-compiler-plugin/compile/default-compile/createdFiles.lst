@@ -1,0 +1,3 @@
+com\example\temperatureconverter\service\TemperatureConverterService.class
+com\example\temperatureconverter\service\controller\TemperatureConverterController.class
+com\example\temperatureconverter\TemperatureConverterApplication.class
