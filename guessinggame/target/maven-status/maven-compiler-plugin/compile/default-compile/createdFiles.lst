@@ -1,0 +1,3 @@
+com\example\guessinggame\GuessingGameApplication.class
+com\example\guessinggame\controller\GuessingGameController.class
+com\example\guessinggame\Service\GuessingGameService.class
