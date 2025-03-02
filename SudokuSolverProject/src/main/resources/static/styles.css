@@ -1,0 +1,71 @@
+body {
+    background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    width: 90%;
+    max-width: 600px;
+    border-radius: 15px;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+.sudoku-grid {
+    width: 100%;
+    max-width: 400px;
+    border-collapse: collapse;
+}
+
+.sudoku-grid td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid #000;
+    padding: 5px;
+    position: relative;
+}
+
+.sudoku-grid tr:nth-child(3n) td {
+    border-bottom: 3px solid black;
+}
+
+.sudoku-grid td:nth-child(3n) {
+    border-right: 3px solid black;
+}
+
+.sudoku-input {
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    text-align: center;
+    border: none;
+    outline: none;
+    background: #f8f9fa;
+}
+
+.sudoku-input:focus {
+    background: #e2e6ea;
+    border-radius: 5px;
+}
+
+.btn {
+    width: 45%;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.alert {
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+}
