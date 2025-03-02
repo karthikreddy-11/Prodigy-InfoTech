@@ -1,0 +1,5 @@
+com\example\Web\Scraping\WebScrapingApplication.class
+com\scraper\Config.class
+com\scraper\DataProcessor.class
+com\scraper\Product.class
+com\scraper\WebScraper.class
